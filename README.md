@@ -2,7 +2,7 @@
 
 ### 使用案例
 
-```
+```go
 
 package main
 
