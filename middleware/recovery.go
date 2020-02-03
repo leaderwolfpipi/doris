@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"bytes"
-	"doris"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -11,6 +10,8 @@ import (
 	"os"
 	"runtime"
 	"strings"
+
+	"github.com/leaderwolfpipi/doris"
 )
 
 // 全局变量定义
