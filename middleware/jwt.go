@@ -86,6 +86,7 @@ const (
 var (
 	// DefaultJWTConfig is the default JWT auth middleware config.
 	DefaultJWTConfig = JWTConfig{
+		Skipper:       DefaultSkipper,
 		SigningMethod: AlgorithmHS256,
 		ContextKey:    "user",
 		TokenLookup:   "header:" + doris.Authorization,
@@ -116,7 +117,7 @@ func JWTWithConfig(config JWTConfig) doris.HandlerFunc {
 		config.Skipper = DefaultJWTConfig.Skipper
 	}
 	if config.SigningKey == nil {
-		panic("echo: jwt middleware requires signing key")
+		panic("doris: jwt middleware requires signing key")
 	}
 	if config.SigningMethod == "" {
 		config.SigningMethod = DefaultJWTConfig.SigningMethod
@@ -187,6 +188,7 @@ func JWTWithConfig(config JWTConfig) doris.HandlerFunc {
 				config.SuccessHandler(c)
 			}
 			c.Next()
+			return nil
 		}
 		if config.ErrorHandler != nil {
 			return config.ErrorHandler(err)
@@ -244,4 +246,9 @@ func jwtFromCookie(name string) jwtExtractor {
 		}
 		return cookie, nil
 	}
+}
+
+// DefaultSkipper returns false which processes the middleware.
+func DefaultSkipper(*doris.Context) bool {
+	return false
 }

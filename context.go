@@ -25,7 +25,7 @@ type Context struct {
 	index     int8                   // 执行的中间件索引
 	fullPath  string                 // 全路径
 	Doris     *Doris                 // 框架对象
-	params    map[string]interface{} // 保存同一个context下的参数（key/value）
+	Params    map[string]interface{} // 保存同一个context下的参数（key/value）
 	accepted  []string               // 保存被接受的内容协商类型
 	lock      sync.RWMutex           // 上下文锁
 	// errors   errorMsgs     // 保存同一个context下的所有中间件和主处理函数的错误信息
@@ -50,7 +50,7 @@ const abortIndex int8 = math.MaxInt8 / 2
 // 定义Context的Next方法
 func (c *Context) Next() {
 	// debug
-	debugPrintMessage("c.handlers", c.handlers, c.Doris.Debug)
+	// debugPrintMessage("c.handlers", c.handlers, c.Doris.Debug)
 	// 通过Next启动处理链
 	c.index++
 	// 循环逐个执行注册的方法
@@ -130,12 +130,12 @@ func (c *Context) File(filepath string) {
 
 // 根据参数名获取参数值
 func (c *Context) Param(name string) interface{} {
-	return c.params[name]
+	return c.Params[name]
 }
 
 // 设置k-v到context中
 func (c *Context) SetParam(name string, value interface{}) {
-	c.params[name] = value
+	c.Params[name] = value
 }
 
 /************************************/
