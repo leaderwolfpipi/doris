@@ -41,19 +41,27 @@ type (
 		// beforeHandlers   HandlersChain       // 全局前向中间件调用链
 		// afterHandlers    HandlersChain       // 全局后向中间件调用链
 	}
+
 	// 请求过程中出现的错误提示
 	HTTPError struct {
 		Code    int         `json:"-"`       // 错误编号
 		Message interface{} `json:"message"` // 错误信息
 	}
+
 	// 定义http请求处理函数
 	HandlerFunc func(*Context) error
+
 	// 定义HandlerFunc数组
 	HandlersChain []HandlerFunc
+
 	// 集中式http错误处理器
 	HTTPErrorHandler func(error, Context)
+
 	// map[string]interface{}的简短定义
 	D map[string]interface{}
+
+	// 用于存储JWT鉴权字段名称
+	Authorization string
 )
 
 // 定义方法列表

@@ -22,3 +22,13 @@ var HTTPErrorMessages = map[int]error{
 	http.StatusRequestTimeout:        errors.New("Request timeout"),
 	http.StatusServiceUnavailable:    errors.New("Service unavailable"),
 }
+
+// Define jwt Errors
+var (
+	TokenExpired     error = errors.New("Token is expired")
+	TokenNotValidYet error = errors.New("Token not active yet")
+	TokenMalformed   error = errors.New("That's not even a token")
+	TokenInvalid     error = errors.New("Couldn't handle this token:")
+	ErrJWTMissing    error = errors.New("missing or malformed jwt")
+)
+

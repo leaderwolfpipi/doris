@@ -1,3 +1,0 @@
-// 绑定yaml格式参数
-// todo...
-package binding
