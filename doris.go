@@ -19,7 +19,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/pxlh007/logger"
+	"github.com/leaderwolfpipi/logger"
 )
 
 type (

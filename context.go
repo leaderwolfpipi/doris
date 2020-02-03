@@ -9,8 +9,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/pxlh007/doris/binding"
-	"github.com/pxlh007/doris/render"
+	"github.com/leaderwolfpipi/binding"
+	"github.com/leaderwolfpipi/render"
 )
 
 // context是doris框架中最重要的结构之一，主要功能：
