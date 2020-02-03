@@ -1,3 +1,5 @@
+github.com/dgrijalva/jwt-go v3.2.0+incompatible h1:7qlOGliEKZXTDg6OTjfoBKDXWrumCAMpl/TFQ4/5kLM=
+github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/leaderwolfpipi/binding v0.0.0-20200203052103-9d1c782eabc9 h1:gtchHNjdh1cYUdfhfFCbkPaWNOlRb9Dvbb4DvCWp08c=
 github.com/leaderwolfpipi/binding v0.0.0-20200203052103-9d1c782eabc9/go.mod h1:CFh1HB4AAo14DprEwHHrmylisE7/ZJsVSOQWaOiVD7A=
 github.com/leaderwolfpipi/logger v0.0.0-20200105024148-3e9e4bc27bd3 h1:6DV7lZPAlqBUII+lTbKSnyItFXv00sHo/6oQE921nLE=

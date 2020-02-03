@@ -133,6 +133,11 @@ func (c *Context) Param(name string) interface{} {
 	return c.params[name]
 }
 
+// 设置k-v到context中
+func (c *Context) SetParam(name string, value interface{}) interface{} {
+	c.params[name] = value
+}
+
 /************************************/
 /******** 响应渲染相关 ****************/
 /************************************/
