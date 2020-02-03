@@ -59,9 +59,6 @@ type (
 
 	// map[string]interface{}的简短定义
 	D map[string]interface{}
-
-	// 用于存储JWT鉴权字段名称
-	Authorization string
 )
 
 // 定义方法列表
@@ -74,6 +71,9 @@ var httpMethods []string = []string{
 	"HEAD",
 	"PATCH",
 }
+
+// 用于存储JWT鉴权字段名称
+var Authorization string
 
 // 启动时打印框架版本和banner信息
 const (

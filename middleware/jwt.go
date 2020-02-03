@@ -204,7 +204,7 @@ func JWTWithConfig(config JWTConfig) doris.HandlerFunc {
 // jwtFromHeader returns a `jwtExtractor` that extracts token from the request header.
 func jwtFromHeader(header string, authScheme string) jwtExtractor {
 	return func(c *doris.Context) (string, error) {
-		auth := c.Request().Header.Get(header)
+		auth := c.Request.Header.Get(header)
 		l := len(authScheme)
 		if len(auth) > l+1 && auth[:l] == authScheme {
 			return auth[l+1:], nil
@@ -215,7 +215,7 @@ func jwtFromHeader(header string, authScheme string) jwtExtractor {
 
 // jwtFromQuery returns a `jwtExtractor` that extracts token from the query string.
 func jwtFromQuery(param string) jwtExtractor {
-	return func(c doris.Context) (string, error) {
+	return func(c *doris.Context) (string, error) {
 		token := c.QueryParam(param)
 		if token == "" {
 			return "", doris.ErrJWTMissing
@@ -226,22 +226,22 @@ func jwtFromQuery(param string) jwtExtractor {
 
 // jwtFromParam returns a `jwtExtractor` that extracts token from the url param string.
 func jwtFromParam(param string) jwtExtractor {
-	return func(c doris.Context) (string, error) {
+	return func(c *doris.Context) (string, error) {
 		token := c.Param(param)
 		if token == "" {
 			return "", doris.ErrJWTMissing
 		}
-		return token, nil
+		return token.(string), nil
 	}
 }
 
 // jwtFromCookie returns a `jwtExtractor` that extracts token from the named cookie.
 func jwtFromCookie(name string) jwtExtractor {
-	return func(c doris.Context) (string, error) {
+	return func(c *doris.Context) (string, error) {
 		cookie, err := c.Cookie(name)
 		if err != nil {
 			return "", doris.ErrJWTMissing
 		}
-		return cookie.Value, nil
+		return cookie, nil
 	}
 }
