@@ -209,7 +209,7 @@ func jwtFromHeader(header string, authScheme string) jwtExtractor {
 		if len(auth) > l+1 && auth[:l] == authScheme {
 			return auth[l+1:], nil
 		}
-		return "", ErrJWTMissing
+		return "", doris.ErrJWTMissing
 	}
 }
 
@@ -218,7 +218,7 @@ func jwtFromQuery(param string) jwtExtractor {
 	return func(c doris.Context) (string, error) {
 		token := c.QueryParam(param)
 		if token == "" {
-			return "", ErrJWTMissing
+			return "", doris.ErrJWTMissing
 		}
 		return token, nil
 	}
@@ -229,7 +229,7 @@ func jwtFromParam(param string) jwtExtractor {
 	return func(c doris.Context) (string, error) {
 		token := c.Param(param)
 		if token == "" {
-			return "", ErrJWTMissing
+			return "", doris.ErrJWTMissing
 		}
 		return token, nil
 	}
@@ -240,7 +240,7 @@ func jwtFromCookie(name string) jwtExtractor {
 	return func(c doris.Context) (string, error) {
 		cookie, err := c.Cookie(name)
 		if err != nil {
-			return "", ErrJWTMissing
+			return "", doris.ErrJWTMissing
 		}
 		return cookie.Value, nil
 	}
