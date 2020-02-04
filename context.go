@@ -65,6 +65,14 @@ func (c *Context) Abort() {
 	c.index = abortIndex
 }
 
+// AbortWithStatus calls `Abort()` and writes the headers with the specified status code.
+// For example, a failed attempt to authenticate a request could use: context.AbortWithStatus(401).
+func (c *Context) AbortWithStatus(code int) {
+	c.Status(code)
+	// c.Response.WriteHeaderNow()
+	c.Abort()
+}
+
 /************************************/
 /******** 参数绑定/获取相关 ************/
 /************************************/
