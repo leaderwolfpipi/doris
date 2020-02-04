@@ -1,11 +1,11 @@
 ## doris高性能、易扩展、又好用的go web开发框架
 
 ### 部署步骤
-> 设置环境变量GOPATH
-> 安装最新版本的go(>=1.11.0)
-> 任意建一个新的工作目录doris，并新建main.go文件拷贝下面的实例代码
-> 运行`go mod init dorsi/main`（模块名称任意取）
-> 运行`go build`即可自动完成依赖的下载和代码编译
+> 设置环境变量GOPATH <br />
+> 安装最新版本的go(>=1.11.0) <br />
+> 任意建一个新的工作目录doris，并新建main.go文件拷贝下面的实例代码 <br />
+> 运行`go mod init dorsi/main`（模块名称任意取） <br />
+> 运行`go build`即可自动完成依赖的下载和代码编译 <br />
 
 ### 备注说明
 运行`go build`或者`go test`等之后项目的依赖代码会自动下载到`$GOPATH/pkg/mod/`下面
