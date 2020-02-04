@@ -50,7 +50,7 @@ const abortIndex int8 = math.MaxInt8 / 2
 // 定义Context的Next方法
 func (c *Context) Next() {
 	// debug
-	// debugPrintMessage("c.handlers", c.handlers, c.Doris.Debug)
+	debugPrintMessage("c.handlers", c.handlers, c.Doris.Debug)
 	// 通过Next启动处理链
 	c.index++
 	// 循环逐个执行注册的方法
@@ -135,6 +135,9 @@ func (c *Context) Param(name string) interface{} {
 
 // 设置k-v到context中
 func (c *Context) SetParam(name string, value interface{}) {
+	if c.Params == nil {
+		c.Params = make(map[string]interface{})
+	}
 	c.Params[name] = value
 }
 

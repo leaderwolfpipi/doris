@@ -124,7 +124,7 @@ const (
 )
 
 // 用于存储JWT鉴权字段名称
-var Authorization string
+var Authorization string = "jwt"
 
 // 启动时打印框架版本和banner信息
 const (
@@ -195,8 +195,9 @@ func (doris *Doris) Use(handlers ...HandlerFunc) IRoutes {
 	debugPrintMessage("handlers", handlers, doris.Debug)
 	debugPrintMessage("调试信息", "__debug__", doris.Debug)
 	// 给错误处理器添加中间件
-	doris.noRoute = append(doris.noRoute, handlers...)
-	doris.noMethod = append(doris.noMethod, handlers...)
+	// add handlers before noRoute or noMethod to avoid unexpected error
+	doris.noRoute = append(handlers, doris.noRoute...)
+	doris.noMethod = append(handlers, doris.noMethod...)
 	// 追加处理器到handlers尾部
 	return doris.RouteGroup.Use(handlers...)
 }

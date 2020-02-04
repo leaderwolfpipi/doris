@@ -2,7 +2,6 @@
 package middleware
 
 import (
-	// "fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -24,8 +23,32 @@ type jwtCustomClaims struct {
 	jwtCustomInfo
 }
 
+// Test jwt in doris
+func TestDorisJwt(t *testing.T) {
+	d := doris.New()
+	// d.Debug = true
+	doris.Authorization = "jwt"
+
+	handler := func(c *doris.Context) error {
+		c.String(http.StatusOK, "test")
+		return nil
+	}
+
+	// add middleware
+	d.Use(JWT([]byte("secret")))
+	d.Use(Logger())
+	d.Use(Recovery())
+
+	d.GET("/", handler)
+
+	d.Run("localhost:9528")
+}
+
 func TestJWT(t *testing.T) {
-	//	d := doris.New()
+	d := doris.New()
+	d.Debug = false
+	d.Use(Logger())
+	d.Use(Recovery())
 	//	handler := func(c *doris.Context) error {
 	//		c.String(http.StatusOK, "test")
 	//		return nil
@@ -44,10 +67,10 @@ func TestJWT(t *testing.T) {
 		hdrCookie  string // test.Request doesn't provide SetCookie(); use name=val
 		info       string
 	}{
-		//		{
-		//			expPanic: true,
-		//			info:     "No signing key provided",
-		//		},
+		{
+			expPanic: true,
+			info:     "No signing key provided",
+		},
 		{
 			expErrCode: http.StatusBadRequest,
 			config: JWTConfig{
@@ -173,19 +196,12 @@ func TestJWT(t *testing.T) {
 				Writer: res,
 			},
 			Request: req,
+			Doris:   d,
 		}
-		//		c.Response = &doris.Response{
-		//			Writer: res,
-		//		}
-		// malloc mem
-		c.Params = make(map[string]interface{})
 		// c := doris.Context(req, res)
 		if tc.reqURL == "/"+token {
 			c.SetParam("jwt", token)
 		}
-
-		// token_jwt := c.Param("jwt")
-		// fmt.Println(token_jwt)
 
 		if tc.expPanic {
 			assert.Panics(t, func() {
@@ -199,12 +215,9 @@ func TestJWT(t *testing.T) {
 			he := h(c).(error)
 			assert.Equal(t, tc.expErrCode, he, tc.info)
 			continue
-		} else {
-			// fmt.Println(tc.expErrCode)
 		}
 
 		h := JWTWithConfig(tc.config)
-		// fmt.Println(tc.info)
 		if assert.NoError(t, h(c), tc.info) {
 			user := c.Param("user").(*jwt.Token)
 			switch claims := user.Claims.(type) {

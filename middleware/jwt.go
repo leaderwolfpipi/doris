@@ -162,6 +162,7 @@ func JWTWithConfig(config JWTConfig) doris.HandlerFunc {
 		}
 
 		auth, err := extractor(c)
+
 		if err != nil {
 			if config.ErrorHandler != nil {
 				return config.ErrorHandler(err)
@@ -170,6 +171,10 @@ func JWTWithConfig(config JWTConfig) doris.HandlerFunc {
 			if config.ErrorHandlerWithContext != nil {
 				return config.ErrorHandlerWithContext(err, c)
 			}
+
+			// Render error json and abort
+			c.Json(http.StatusUnauthorized, doris.D{"code": http.StatusUnauthorized, "message": "JWT ERR: " + err.Error()})
+			c.Abort()
 			return err
 		}
 		token := new(jwt.Token)
@@ -198,7 +203,8 @@ func JWTWithConfig(config JWTConfig) doris.HandlerFunc {
 		}
 
 		// Render error json
-		c.Json(http.StatusUnauthorized, "invalid or expired jwt"+err.Error())
+		c.Json(http.StatusUnauthorized, doris.D{"code": http.StatusUnauthorized, "message": "Invalid or Expired JWT: " + err.Error()})
+		c.Abort()
 		return err
 	}
 }
