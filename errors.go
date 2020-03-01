@@ -25,10 +25,21 @@ var HTTPErrorMessages = map[int]error{
 
 // Define jwt Errors
 var (
-	TokenExpired     error = errors.New("Token is expired")
-	TokenNotValidYet error = errors.New("Token not active yet")
-	TokenMalformed   error = errors.New("That's not even a token")
-	TokenInvalid     error = errors.New("Couldn't handle this token:")
-	ErrJWTMissing    error = errors.New("missing or malformed jwt")
+	TokenExpiredErr     error = errors.New("Token is expired")
+	TokenNotValidYetErr error = errors.New("Token not active yet")
+	TokenMalformedErr   error = errors.New("That's not even a token")
+	TokenInvalidErr     error = errors.New("Couldn't handle this token:")
+	JWTMissingErr       error = errors.New("Missing or Malformed JWT")
+	TokenRefreshErr     error = errors.New("This token is for refresh!")
 )
 
+// define jwt err code
+// 10xxx is system error of the doris
+var (
+	TokenExpired     int = 10400
+	TokenNotValidYet int = 10401
+	TokenMalformed   int = 10402
+	TokenInvalid     int = 10403
+	JWTMissing       int = 10404
+	TokenRefresh     int = 10405
+)

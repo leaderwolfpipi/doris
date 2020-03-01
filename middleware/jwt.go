@@ -157,6 +157,10 @@ func JWTWithConfig(config JWTConfig) doris.HandlerFunc {
 
 	// Return the middleware
 	return func(c *doris.Context) error {
+		// init param
+		var code int = http.StatusUnauthorized
+		var errMsg error = nil
+
 		if config.Skipper(c) {
 			c.Next()
 		}
@@ -186,6 +190,18 @@ func JWTWithConfig(config JWTConfig) doris.HandlerFunc {
 			claims := reflect.New(t).Interface().(jwt.Claims)
 			token, err = jwt.ParseWithClaims(auth, claims, config.keyFunc)
 		}
+
+		// 判断claims
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if ok && claims["auth_type"].(string) == "refresh" {
+			// 说明来自刷新token
+			code = doris.TokenRefresh
+			errMsg = doris.TokenRefreshErr
+			c.Json(http.StatusUnauthorized, doris.D{"code": code, "message": "Invalid or Expired JWT: " + errMsg.Error()})
+			c.Abort()
+			return errMsg
+		}
+
 		if err == nil && token.Valid {
 			// Store user information from token into context.
 			c.SetParam(config.ContextKey, token)
@@ -195,15 +211,34 @@ func JWTWithConfig(config JWTConfig) doris.HandlerFunc {
 			c.Next()
 			return nil
 		}
+
+		// check err type of jwt
+		if ve, ok := err.(*jwt.ValidationError); ok {
+			if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+				code = doris.TokenMalformed
+				errMsg = doris.TokenMalformedErr
+			} else if ve.Errors&jwt.ValidationErrorExpired != 0 {
+				code = doris.TokenExpired
+				errMsg = doris.TokenExpiredErr
+			} else if ve.Errors&jwt.ValidationErrorNotValidYet != 0 {
+				code = doris.TokenNotValidYet
+				errMsg = doris.TokenNotValidYetErr
+			} else {
+				code = doris.TokenInvalid
+				errMsg = doris.TokenInvalidErr
+			}
+		}
+
 		if config.ErrorHandler != nil {
 			return config.ErrorHandler(err)
 		}
+
 		if config.ErrorHandlerWithContext != nil {
 			return config.ErrorHandlerWithContext(err, c)
 		}
 
 		// Render error json
-		c.Json(http.StatusUnauthorized, doris.D{"code": http.StatusUnauthorized, "message": "Invalid or Expired JWT: " + err.Error()})
+		c.Json(http.StatusUnauthorized, doris.D{"code": code, "message": "Invalid or Expired JWT: " + errMsg.Error() + " [ origin err: " + err.Error() + " ] "})
 		c.Abort()
 		return err
 	}
@@ -217,7 +252,7 @@ func jwtFromHeader(header string, authScheme string) jwtExtractor {
 		if len(auth) > l+1 && auth[:l] == authScheme {
 			return auth[l+1:], nil
 		}
-		return "", doris.ErrJWTMissing
+		return "", doris.JWTMissingErr
 	}
 }
 
@@ -226,7 +261,7 @@ func jwtFromQuery(param string) jwtExtractor {
 	return func(c *doris.Context) (string, error) {
 		token := c.QueryParam(param)
 		if token == "" {
-			return "", doris.ErrJWTMissing
+			return "", doris.JWTMissingErr
 		}
 		return token, nil
 	}
@@ -237,7 +272,7 @@ func jwtFromParam(param string) jwtExtractor {
 	return func(c *doris.Context) (string, error) {
 		token := c.Param(param)
 		if token == "" {
-			return "", doris.ErrJWTMissing
+			return "", doris.JWTMissingErr
 		}
 		return token.(string), nil
 	}
@@ -248,7 +283,7 @@ func jwtFromCookie(name string) jwtExtractor {
 	return func(c *doris.Context) (string, error) {
 		cookie, err := c.Cookie(name)
 		if err != nil {
-			return "", doris.ErrJWTMissing
+			return "", doris.JWTMissingErr
 		}
 		return cookie, nil
 	}

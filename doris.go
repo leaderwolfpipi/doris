@@ -124,7 +124,7 @@ const (
 )
 
 // 用于存储JWT鉴权字段名称
-var Authorization string = "jwt"
+var Authorization string = "Authorization"
 
 // 启动时打印框架版本和banner信息
 const (
