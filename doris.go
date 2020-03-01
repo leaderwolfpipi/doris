@@ -36,7 +36,7 @@ type (
 		noRoute          HandlersChain          // 不存在路由处理链
 		noMethod         HandlersChain          // 不存在方法处理链
 		allowMethod      []string               // 允许的HTTP方法列表
-		Logger           *logger.Logger         // 全局日志记录器
+		Logger           logger.ILogger         // 全局日志记录器
 		ShowBanner       bool                   // 是否显示banner信息
 		// beforeHandlers   HandlersChain       // 全局前向中间件调用链
 		// afterHandlers    HandlersChain       // 全局后向中间件调用链
@@ -149,17 +149,11 @@ _________________________________Author: JonahLou__
 func New() *Doris {
 	doris := &Doris{
 		maxParam:    new(int),
-		Logger:      logger.NewLogger(),
 		allowMethod: []string{"GET", "POST", "DELETE", "PUT", "OPTIONS", "HEAD"},
 	}
-	// 启动日志
-	doris.Logger.SetCacheSwitch(true)
-	doris.Logger.Start()
 	// 注册默认404和405函数
 	doris.NoMethod(defaultNoMethod)
 	doris.NoRoute(defaultNoRoute)
-	// 设置错误级别
-	//doris.Logger.SetLevel(log.ERROR)
 	doris.RouteGroup.doris = doris
 	doris.pool.New = func() interface{} {
 		return doris.allocateContext()
